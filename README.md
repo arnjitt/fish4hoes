@@ -3,10 +3,10 @@ A typical GitHub README file serves as the landing page and documentation for a 
 ## Typical Sections of a README
 
 A well-structured README typically includes the following sections, in roughly this order:
--Project Title & Description: A clear, bold title and a concise summary (an "elevator pitch") of what the project does, the problem it solves, and its primary purpose.
--Visuals/Demo (Optional but Recommended): Screenshots or a GIF demonstrating the project in action can quickly convey its functionality and appeal.
--Table of Contents (For longer READMEs): A table of contents makes it easier for users to navigate the document.
--Badges (Optional): Small images that provide metadata such as build status, license type, or project version using services like Shields.io.
+- Project Title & Description: A clear, bold title and a concise summary (an "elevator pitch") of what the project does, the problem it solves, and its primary purpose.
+- Visuals/Demo (Optional but Recommended): Screenshots or a GIF demonstrating the project in action can quickly convey its functionality and appeal.
+- Table of Contents (For longer READMEs): A table of contents makes it easier for users to navigate the document.
+- Badges (Optional): Small images that provide metadata such as build status, license type, or project version using services like Shields.io.
 
 ## Getting Started/Installation: Step-by-step instructions on how to get the project running locally, including any prerequisites or system requirements (e.g., Node.js version, Python version).
 
