@@ -1,6 +1,6 @@
 A typical GitHub README file serves as the landing page and documentation for a project, providing essential information for users and potential contributors. It is written in Markdown format and typically includes several standard sections. 
 
-Typical Sections of a README
+## Typical Sections of a README
 
 A well-structured README typically includes the following sections, in roughly this order:
 
