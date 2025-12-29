@@ -39,13 +39,13 @@
         {% for friend in friends %}
             <div class="friend">
                 <div>{{ friend.name }}</div>
-                <div>
+                <div>Energy:
                     {% if friend.energy == "low" %}
-                        <span class="energy-low">Energy: Low</span>
+                        <span class="energy-low"> Low</span>
                     {% elif friend.energy == "medium" %}
-                        <span class="energy-medium">Energy: Medium</span>
+                        <span class="energy-medium"> Medium</span>
                     {% else %}
-                        <span class="energy-high">Energy: High</span>
+                        <span class="energy-high"> High</span>
                     {% endif %}
                 </div>
             </div>

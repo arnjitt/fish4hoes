@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add / Update Friends</title>
+</head>
+<body>
+    <h2>Add Friend</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ friend_form.as_p }}
+        <button type="submit" name="save_new">Add Friend</button>
+    </form>
+
+    <hr>
+
+    <h2>Update Energy Levels</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Energy</th>
+            </tr>
+            {% for form in formset %}
+                {{ form.id }}  {# hidden primary key field (important) #}
+                <tr>
+                    <td>{{ form.instance.name }}</td>
+                    <td>{{ form.energy }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <button type="submit" name="save_energy">Update levels</button>
+    </form>
+
+    <p><a href="{% url 'chat_room' %}">Back to chat</a></p>
+</body>
+</html>
