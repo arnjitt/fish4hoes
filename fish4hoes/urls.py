@@ -23,4 +23,6 @@ urlpatterns = [
     path('home/', views.fishington_home, name='home'),
     path('crew/', views.crewLive, name='crew'),
     path('projects/', views.projectsPage, name='projects'),
+    path('chatroom/', views.chat_room, name='chat_room'),
+    path('add_friend/', views.add_friend, name='add_friend'),
 ]
