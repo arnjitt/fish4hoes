@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from .models import Friend
 from .forms import FriendForm, FriendEnergyFormSet
 
+
+
 def fishington_home(request):
   return render(request, "website/fishington.html")
 
@@ -11,8 +13,30 @@ def crewLive(request):
 def projectsPage(request):
   return render(request, "website/projects.html")
 
+FRIEND_COLORS = [
+  "red",
+  "blue",
+  "green",
+  "black",
+  "orange",
+  "teal",
+  "limegreen",
+  "purple",
+  "grey",
+  "brown",
+]
+
+def assign_friend_colors(friends):
+  colored = []
+  palette_len = len(FRIEND_COLORS)
+  for idx, friend in enumerate(friends):
+    color = FRIEND_COLORS[idx % palette_len]
+    colored.append((friend,color))
+  return colored
+
 def chat_room(request):
-  friends = Friend.objects.all()
+  friends_qs = Friend.objects.all()
+  friends_with_colors = assign_friend_colors(friends_qs)
   # sample messages // not from DB
   messages = [
     {"author": "System", "text": "Welcome to 4x4 demo"},
@@ -20,7 +44,14 @@ def chat_room(request):
     {"author": "Bryan", "text": "Ohhhhhahhhahhhahhhah"},
     {"author": "Mikey", "text": "Toughness"},
   ]
-  return render(request, "website/chat_room.html", {"friends": friends, "messages": messages})
+  return render(
+    request, 
+    "website/chat_room.html", 
+    {
+      "friends_with_colors": friends_with_colors, 
+      "messages": messages
+    }
+  )
 
 
 ## Page Logic held for adding Friends to database
@@ -50,3 +81,16 @@ def add_friend(request):
     "friend_form": friend_form,
     "formset": formset,
   })
+
+def plan_event(request):
+    friends_qs = Friend.objects.all()
+    friends_with_colors = assign_friend_colors(friends_qs)
+    event_name = "Basketball Trip"
+    return render(
+        request,
+        "website/plan_event.html",
+        {
+            "friends_with_colors": friends_with_colors,
+            "event_name": event_name,
+        },
+    )
