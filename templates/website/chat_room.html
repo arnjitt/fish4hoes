@@ -36,9 +36,9 @@
 
     <div class="sidebar">
         <h3>Friends & Energy</h3>
-        {% for friend in friends %}
-            <div class="friend">
-                <div>{{ friend.name }}</div>
+        {% for friend, color in friends_with_colors %}
+            <div class="friend" style="border-left: 4px solid {{  color }};">
+              <div style="color: {{color}};">{{ friend.name }}</div>
                 <div>Energy:
                     {% if friend.energy == "low" %}
                         <span class="energy-low"> Low</span>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Plan {{ event_name }}</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 16px; }
+        h1 { margin-bottom: 16px; }
+
+        .layout { display: flex; gap: 16px; }
+        .friends-list, .roles { flex: 1; }
+
+        .friend-item {
+          padding: 4px 6px;
+          margin-bottom: 4px;
+          border: 2px solid #ccc;
+          border-radius: 4px;
+          background: #fff;
+          cursor: grab;
+          font-size: 0.9rem;
+          max-width: 160px;           /* keeps the pill small */
+          white-space: nowrap;        /* single line */
+          overflow: hidden;           /* hide overflow */
+          text-overflow: ellipsis;    /* show “…” if too long */
+        }
+
+        .role-box {
+            border: 2px dashed #bbb;
+            border-radius: 6px;
+            padding: 8px;
+            min-height: 80px;
+            margin-bottom: 12px;
+        }
+
+        .role-box.active {
+            border-color: #1976d2;
+            background: #e3f2fd;
+        }
+
+        .role-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Plan: {{ event_name }}</h1>
+    <p>Drag friends into roles for this trip.</p>
+
+    <div class="layout">
+        <div class="friends-list">
+            <h3>Available Friends</h3>
+            <!-- sanity check -->
+            <div id="friendsPool">
+              {% for friend, color in friends_with_colors %}
+                <div class="friend-item"
+                  draggable="true"
+                  id="friend-{{ friend.id }}"
+                  style="border-color: {{ color }}; background-color: {{ color }}20;">
+                  <span style="color: {{ color }};">{{ friend.name }}</span>
+                </div>
+              {% empty %}
+                <p>No friends yet. Add some first.</p>
+              {% endfor %}
+            </div>
+</div>
+        </div>
+
+        <div class="roles">
+            <h3>Roles for Basketball Trip</h3>
+
+            <div class="role-box" data-role="driver">
+                <div class="role-title">Driver</div>
+            </div>
+
+            <div class="role-box" data-role="bring_x">
+                <div class="role-title">Bringing X (Snacks)</div>
+            </div>
+
+            <div class="role-box" data-role="bring_y">
+                <div class="role-title">Bringing Y (Drinks)</div>
+            </div>
+        </div>
+    </div>
+
+    <p><a href="{% url 'chat_room' %}">Back to chat</a></p>
+
+    <!-- Existing roles -->
+    <div class="role-box" data-role="driver">
+        <div class="role-title">Driver</div>
+    </div>
+    <div class="role-box" data-role="bring_x">
+        <div class="role-title">Bringing X (Snacks)</div>
+    </div>
+    <div class="role-box" data-role="bring_y">
+        <div class="role-title">Bringing Y (Drinks)</div>
+    </div>
+
+    <hr>
+
+    <h3>Carpool Overview</h3>
+    <p style="font-size:0.9rem;">
+        Destination type:
+        <select id="destinationType">
+            <option value="outdoor">Outdoor (rides needed)</option>
+            <option value="house">House (most people self-arrive)</option>
+        </select>
+    </p>
+
+    <div class="role-box" data-role="car_drivers">
+        <div class="role-title">Drivers</div>
+        <!-- drag friends here who are driving -->
+    </div>
+    <div class="role-box" data-role="car_riders">
+        <div class="role-title">Riders needing a seat</div>
+        <!-- drag friends here who need a ride -->
+    </div>
+</div>
+<button id="carpoolSummaryBtn">Show carpool summary</button>
+<p id="carpoolSummary" style="font-size:0.9rem;"></p>
+
+<script>
+  function getNames(container) {
+      return Array.from(container.querySelectorAll('.friend-item'))
+                  .map(el => el.textContent.trim());
+  }
+
+  document.getElementById('carpoolSummaryBtn').addEventListener('click', () => {
+      const destType = document.getElementById('destinationType').value;
+      const driversBox = document.querySelector('[data-role="car_drivers"]');
+      const ridersBox = document.querySelector('[data-role="car_riders"]');
+
+      const drivers = getNames(driversBox);
+      const riders = getNames(ridersBox);
+
+      let text = '';
+      if (destType === 'outdoor') {
+          text += `Outdoor trip: ${drivers.length} driver(s), ${riders.length} rider(s). `;
+      } else {
+          text += `House event: rides are optional. ${drivers.length} driver(s) offering rides, ${riders.length} rider(s). `;
+      }
+
+      if (drivers.length) {
+          text += `Drivers: ${drivers.join(', ')}. `;
+      }
+      if (riders.length) {
+          text += `Riders: ${riders.join(', ')}.`;
+      }
+
+      document.getElementById('carpoolSummary').textContent = text;
+  });
+</script>
+
+
+    <script>
+        const friendItems = document.querySelectorAll('.friend-item');
+        const roleBoxes = document.querySelectorAll('.role-box');
+
+        let draggedId = null;
+
+        friendItems.forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                draggedId = e.target.id;
+                e.dataTransfer.setData('text/plain', draggedId);
+            });
+        });
+
+        roleBoxes.forEach(box => {
+            box.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                box.classList.add('active');
+            });
+
+            box.addEventListener('dragleave', () => {
+                box.classList.remove('active');
+            });
+
+            box.addEventListener('drop', (e) => {
+                e.preventDefault();
+                box.classList.remove('active');
+                const id = e.dataTransfer.getData('text/plain') || draggedId;
+                const friendEl = document.getElementById(id);
+                if (friendEl) {
+                    box.appendChild(friendEl);
+                }
+            });
+        });
+
+        // Optional: allow dragging back to pool
+        const pool = document.getElementById('friendsPool');
+        pool.addEventListener('dragover', (e) => e.preventDefault());
+        pool.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const id = e.dataTransfer.getData('text/plain') || draggedId;
+            const friendEl = document.getElementById(id);
+            if (friendEl) {
+                pool.appendChild(friendEl);
+            }
+        });
+    </script>
+</body>
+</html>

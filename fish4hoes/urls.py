@@ -25,4 +25,5 @@ urlpatterns = [
     path('projects/', views.projectsPage, name='projects'),
     path('chatroom/', views.chat_room, name='chat_room'),
     path('add_friend/', views.add_friend, name='add_friend'),
+    path('plan_event/', views.plan_event, name='plan_event'),
 ]
